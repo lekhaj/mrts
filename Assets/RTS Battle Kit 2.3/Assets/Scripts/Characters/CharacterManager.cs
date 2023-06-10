@@ -32,6 +32,8 @@ public class CharacterManager : MonoBehaviour {
 	public GameObject bombExplosion;
 	public KeyCode deselectKey;
 	
+	
+	
 	[Space(5)]
 	public bool mobileDragInput;
 	public bool originalPreviewSize;
@@ -45,8 +47,10 @@ public class CharacterManager : MonoBehaviour {
 	public static int gold;
 	public static int food; // declaring the food variable
 	public static GameObject target;
-	
-	private Vector2 mouseDownPos;
+    public static bool Retreat; //-------- retreat boolean
+
+
+    private Vector2 mouseDownPos;
     private Vector2 mouseLastPos;
 	private bool visible; 
     private bool isDown;
@@ -474,4 +478,12 @@ public class CharacterManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		addedFoodText.SetActive(false);
 	}
+
+
+	// function handle retreat burron press
+    public void RetreatPress()
+    {
+		Retreat = true;
+		
+    }
 }

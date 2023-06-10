@@ -245,6 +245,8 @@ public class Manager : MonoBehaviour {
 		Time.timeScale = 0;
 		Manager.gameOver = true;
 	}
+
+
 	public void showHideUnits(){
 		//show or hide the units panel
 		characterButtons.SetActive(!characterButtons.activeSelf);
