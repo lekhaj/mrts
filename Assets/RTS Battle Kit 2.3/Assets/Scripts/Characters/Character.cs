@@ -144,10 +144,10 @@ public class Character : MonoBehaviour
             
 
         }
-        else
-        {
-            walkRandomly = false;   
-        }
+        //else
+        //{
+        //    walkRandomly = false;   
+        //}
 
         //if character ran out of lives add blood particles, add gold and destroy character
         if (lives < 1)
@@ -206,7 +206,7 @@ public class Character : MonoBehaviour
             agent.stoppingDistance = defaultStoppingDistance;
         }
 
-        //first check if character is not selected and moving to a clicked position
+        //first check if character is not selected and moving to a clicked position  ---
         if (!goingToClickedPos)
         {
             //If there's a currentTarget and its within the attack range, move agent to currenttarget
@@ -401,7 +401,7 @@ public class Character : MonoBehaviour
         {
 
             closestDistance_Castle = Vector3.Distance(transform.position, potentialCastle.transform.position);
-            if (closestDistance_Castle < 100)
+            if (closestDistance_Castle < 1000)
             {
                 near_PlayerCastlePosition = potentialCastle.transform.position;
 
