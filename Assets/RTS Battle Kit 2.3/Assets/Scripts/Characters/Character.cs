@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI; 
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class Character : MonoBehaviour {
 	
@@ -28,6 +29,7 @@ public class Character : MonoBehaviour {
 	
 	[Space(10)]
 	public bool wizard;
+	public bool healthRestorer; //--- new property for a charcter
 	public ParticleSystem spawnEffect;
 	public GameObject skeleton;
 	public int skeletonAmount;
@@ -51,6 +53,7 @@ public class Character : MonoBehaviour {
 	
 	private Vector3 randomTarget;
 	private WalkArea area;
+	private int HealRange = 4;  //---- variable for health hela range
 	
 	private ParticleSystem dustEffect;
 	
@@ -88,12 +91,24 @@ public class Character : MonoBehaviour {
 		//if this is a wizard, start the spawning loop
 		if(wizard)
 			StartCoroutine(spawnSkeletons());
-		
+
 		area = GameObject.FindObjectOfType<WalkArea>();
 	}
 	
 	void Update(){
-		bool walkRandomly = true;
+
+
+		//---------------- Checking if the Character is Helath Healer ------------------//
+
+		if (healthRestorer)
+        {
+            CheckNearByAllies();
+
+        }
+
+
+
+        bool walkRandomly = true;
 		
 		//find closest castle
 		if(castle == null){
@@ -259,8 +274,32 @@ public class Character : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void findClosestCastle(){
+
+
+	// Function which checks nearby allies for Health healer Uniy and increase its helath value
+    private void CheckNearByAllies()
+    {
+        
+        GameObject[] allies = GameObject.FindGameObjectsWithTag("Knight");
+
+        foreach (GameObject Posiible_healer in allies)
+        {
+            if (Vector3.Distance(Posiible_healer.transform.position, transform.position) < HealRange && Posiible_healer.GetComponent<Character>().healthRestorer == false)
+            {
+				float CurrentHealth = Posiible_healer.GetComponent<Character>().lives;
+				
+                if (CurrentHealth < startLives)
+                {
+					Posiible_healer.GetComponent<Character>().lives = 10;
+					//Debug.Log("changed" + Posiible_healer.name);
+                    
+                }
+            }
+
+        }
+    }
+
+    public void findClosestCastle(){
 		//find the castles that should be attacked by this character
 		GameObject[] castles = GameObject.FindGameObjectsWithTag(attackCastleTag);
 		
@@ -402,6 +441,10 @@ public class Character : MonoBehaviour {
 		Vector3 position = new Vector3(transform.position.x + Random.Range(1f, 2f), transform.position.y, transform.position.z + Random.Range(-0.5f, 0.5f));
 		Instantiate(skeleton, position, Quaternion.identity);
 	}
+
+
+
+	
 	
 	public IEnumerator die(){
 		if(ragdoll == null){
