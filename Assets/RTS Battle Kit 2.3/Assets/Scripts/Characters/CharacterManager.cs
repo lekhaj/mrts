@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class Troop{
 	public GameObject deployableTroops;
 	public int troopCosts;
+	//public int troopFoodCosts;
 	public Sprite buttonImage;
 	[HideInInspector]
 	public GameObject button;
@@ -18,6 +19,7 @@ public class CharacterManager : MonoBehaviour {
 
 	//variables visible in the inspector	
 	public int startGold;
+	public int startFood; // adding the initial value to food amount
 	public GUIStyle rectangleStyle;
 	public ParticleSystem newUnitEffect;
 	public Texture2D cursorTexture;
@@ -41,6 +43,7 @@ public class CharacterManager : MonoBehaviour {
 	//variables not visible in the inspector
 	public static Vector3 clickedPos;
 	public static int gold;
+	public static int food; // declaring the food variable
 	public static GameObject target;
 	
 	private Vector2 mouseDownPos;
@@ -50,8 +53,10 @@ public class CharacterManager : MonoBehaviour {
 	private GameObject[] knights;
 	private int selectedUnit;
 	private GameObject goldText;
+	private GameObject foodText; //added new food text game object
 	private GameObject goldWarning;
 	private GameObject addedGoldText;
+	private GameObject addedFoodText; // added new food text game object
 	private GameObject characterList;
 	private GameObject characterParent;
 	private GameObject selectButton;
@@ -84,8 +89,13 @@ public class CharacterManager : MonoBehaviour {
 		
 		//find text that displays your amount of gold
 		goldText = GameObject.Find("gold text");
+		foodText = GameObject.Find("food text");  // ----------- food text
 		//find text that appears when you get extra gold
 		addedGoldText = GameObject.Find("added gold text");
+
+
+		//finding food text that appears when additional food added
+		addedFoodText = GameObject.Find("added food text");  //----------- food text game object
 		
 		//find warning that appears when you don't have enough gold to deploy troops
 		goldWarning = GameObject.Find("gold warning");
@@ -103,15 +113,25 @@ public class CharacterManager : MonoBehaviour {
 		
 		//set gold amount to start gold amount
 		gold = startGold;
+
+		//set food amount to the start food
+		food = startFood;
+
 		addedGoldText.SetActive(false);	
 		goldWarning.SetActive(false);
+		addedFoodText.SetActive(false); //----- setting food text value to flase when started
 		
 		//play function addGold every five seconds
 		InvokeRepeating("AddGold", 1.0f, 5.0f);
+
+		// adding the food for every 5 seconds
+		InvokeRepeating("AddFood", 1f, 5f);
 	
 		bombRange.SetActive(false);
 		isPlacingBomb = false;
 	}
+
+	
      
     void Update(){
 		if(bombProgress < 1){
@@ -132,6 +152,9 @@ public class CharacterManager : MonoBehaviour {
 		
 		//set gold text to gold amount
 		goldText.GetComponent<UnityEngine.UI.Text>().text = "" + gold;
+
+		// set the food text to food amount
+		foodText.GetComponent<UnityEngine.UI.Text>().text = "" + food;  //---------setting food value on start to start food
 		
 		//ray from main camera
 		RaycastHit hit;
@@ -262,7 +285,8 @@ public class CharacterManager : MonoBehaviour {
 		GameObject newTroop = Instantiate(troops[selectedUnit].deployableTroops, hit.point, troops[selectedUnit].deployableTroops.transform.rotation) as GameObject;
 		Instantiate(newUnitEffect, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
 		newTroop.transform.parent = characterParent.transform;
-		gold -= troops[selectedUnit].troopCosts;
+		gold -= Mathf.RoundToInt( troops[selectedUnit].troopCosts * 0.8f);
+		food -= Mathf.RoundToInt( troops[selectedUnit].troopCosts * 0.2f);  //-------------Reducing 20% from food value to create unit
 				
 		foreach(Character character in GameObject.FindObjectsOfType<Character>()){
 			if(character != this)
@@ -429,10 +453,25 @@ public class CharacterManager : MonoBehaviour {
 	gold += 100;
 	StartCoroutine(AddedGoldText());
 	}
-	
-	IEnumerator AddedGoldText(){
+
+
+	// function to increment food and show it on screen
+    void AddFood()
+    {
+        food += 50;
+		StartCoroutine(AddedFoodText());	
+    }
+
+    IEnumerator AddedGoldText(){
 	addedGoldText.SetActive(true);	
 	yield return new WaitForSeconds(0.7f);
 	addedGoldText.SetActive(false);	
+	}
+
+	IEnumerator AddedFoodText() //------------ food text coroutine
+	{
+		addedFoodText.SetActive(true);
+		yield return new WaitForSeconds(0.5f);
+		addedFoodText.SetActive(false);
 	}
 }
