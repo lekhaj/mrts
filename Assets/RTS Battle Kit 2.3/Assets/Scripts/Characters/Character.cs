@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class Character : MonoBehaviour
 {
@@ -58,10 +59,14 @@ public class Character : MonoBehaviour
 
 
     private bool retreating;
+    private float Canmerge;
 
     void Start()
     {
         source = GetComponent<AudioSource>();
+
+        //can merge time
+        Canmerge = 2f;
 
         //character is not selected
         selected = false;
@@ -100,7 +105,43 @@ public class Character : MonoBehaviour
 
     void Update()
     {
+
+
+
         bool walkRandomly = true;
+
+        //if (Canmerge >= 0)
+        //{
+        //    Canmerge -= Time.deltaTime;
+        //    //Debug.Log(Canmerge);
+        //    GameObject[] ClosestGameobject = GameObject.FindGameObjectsWithTag("Knight");
+            
+        //    //{
+        //    //    if (Vector3.Distance(transform.position, ClosestGameobject[1].transform.position) < 2)
+        //    //    {
+        //    //        transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        //    //        Debug.Log("Something Happened");
+        //    //    }
+        //    //}
+
+        //    foreach (GameObject gameObject in ClosestGameobject)
+        //    {
+        //        if (ClosestGameobject.Length > 1)
+        //        {
+        //            if (Vector3.Distance( gameObject.transform.position,this.transform.position ) < 1)
+        //            {
+
+        //                Destroy(gameObject, 1f);
+
+        //                Debug.Log(" happening");
+        //                transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        //            }
+        //        }
+
+                
+        //    }
+        //}
+
 
         //find closest castle
         if (castle == null && !retreating)
@@ -317,6 +358,9 @@ public class Character : MonoBehaviour
             }
         }
     }
+
+
+
 
     public void findClosestCastle()
     {
@@ -536,4 +580,15 @@ public class Character : MonoBehaviour
         yield return new WaitForEndOfFrame();
         Destroy(gameObject);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Colliding and colliding");
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("collision entered");
+    }
+
+
 }

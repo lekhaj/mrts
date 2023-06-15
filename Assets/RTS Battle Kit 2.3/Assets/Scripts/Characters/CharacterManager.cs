@@ -486,4 +486,6 @@ public class CharacterManager : MonoBehaviour {
 		Retreat = true;
 		
     }
+
+   
 }
